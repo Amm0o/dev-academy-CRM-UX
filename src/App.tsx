@@ -1,25 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
 import './App.css';
+import ProductsPage from './pages/ProductsPage';
+
+
+// Protected Route Component
+const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({children}) => {
+
+  const {isAuthenticated, loading} = useAuth();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login"></Navigate>;
+};
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  return(
+    <Router>
+      <AuthProvider>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<LandingPage></LandingPage>}></Route>
+            <Route path="/login" element={<LoginPage></LoginPage>}></Route>
+            <Route path="/products" element={
+              <ProtectedRoute>
+                <ProductsPage/>
+              </ProtectedRoute>
+            }/>
+          </Routes>
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
 

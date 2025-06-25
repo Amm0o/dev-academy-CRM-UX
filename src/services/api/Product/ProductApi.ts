@@ -6,7 +6,7 @@ export interface Product {
     productPrice: number;
     productStock: number;
     productDescription: string;
-    productCategory: string;
+    prodcutCategory: string;
     updatedAt: string;
     createdAt: string;
 }
@@ -19,13 +19,18 @@ export interface ProductRequest {
     stock: number;
 }
 
+export interface ProductsResponse {
+  message: string;
+  data: Product[];
+}
+
 class ProductService extends ApiService {
   async getProduct(productId: number): Promise<ApiResponse<Product>> {
     return this.get<Product>(`/product/${productId}`);
   }
 
-  async getAllProducts(): Promise<ApiResponse<Product[]>> {
-    return this.get<Product[]>('/product');
+  async getAllProducts(): Promise<ApiResponse<ProductsResponse>> {
+    return this.get<ProductsResponse>('/product');
   }
 
   async createProduct(product: ProductRequest): Promise<ApiResponse<any>> {
