@@ -46,7 +46,7 @@ class AuthService extends ApiService {
     }
 
     async register(userData: RegisterRequest): Promise<ApiResponse<any>> {
-        return this.post('/user/register');
+        return this.post('/user/register', userData);
     }
 
     isAuthethicated(): boolean {
@@ -55,7 +55,7 @@ class AuthService extends ApiService {
 
     getCurrentUser(): any {
         const useStr = localStorage.getItem('user');
-        return useStr ? JSON.stringify(useStr) : null;
+        return useStr ? JSON.parse(useStr) : null;
     }
 }
 

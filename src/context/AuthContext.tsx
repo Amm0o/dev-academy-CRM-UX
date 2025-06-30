@@ -28,6 +28,9 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
                 setIsAuthenticated(true);
             } catch (error) {
                 console.log('Failed to parse user data');
+                // Clear invalid data
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
             }
         }
         setLoading(false);
@@ -35,29 +38,75 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
 
 
     const login = async (credentials: LoginRequest) => {
-        const response = await authService.login(credentials);
+        try {
+            const response = await authService.login(credentials);
             if(response.data) {
                 const userData = response.data.user;
-
-                const formattedUser = {
-                    id: userData?.id,
-                    email: userData?.email,
-                    name: userData?.name,
-                    role: userData?.role,
+                
+                if (userData) {
+                    const formattedUser = {
+                        id: userData.id || userData.id,
+                        email: userData.email || userData.email,
+                        name: userData.name || userData.name,
+                        role: userData.role || userData.role,
+                    }
+                    
+                    setIsAuthenticated(true);
+                    setUser(formattedUser);
+                } else {
+                    throw new Error('Invalid response format from server');
                 }
-
-                setIsAuthenticated(true);
-                setUser(formattedUser);
             } else {
-                throw new Error(response.error || 'Login Failed!')
+                // Pass through the actual error message from the backend
+                throw new Error(response.error || 'Login failed. Please try again.');
             }
+        } catch (error: any) {
+            console.error('Login error in AuthContext:', error);
+            
+            // Make sure we're not authenticated on error
+            setIsAuthenticated(false);
+            setUser(null);
+            
+            // Clear any invalid tokens
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            
+            // Re-throw the error with proper message
+            if (error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            } else if (error.response?.data) {
+                // Handle string responses from backend
+                const errorData = error.response.data;
+                if (typeof errorData === 'string') {
+                    throw new Error(errorData);
+                } else if (errorData.error) {
+                    throw new Error(errorData.error);
+                } else {
+                    throw new Error('Login failed');
+                }
+            } else if (error.message) {
+                throw error;
+            } else {
+                throw new Error('An unexpected error occurred during login');
+            }
+        }
     }
+
 
     const logout = async () => {
         const token = localStorage.getItem('authToken');
         if(token) {
-            await authService.logout(token);
+            try {
+                await authService.logout(token);
+            } catch (error) {
+                console.error('Logout error:', error);
+                // Continue with local logout even if server logout fails
+            }
         }
+        
+        // Always clear local state
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
         setIsAuthenticated(false);
         setUser(null);
     }

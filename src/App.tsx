@@ -5,8 +5,9 @@ import { CartProvider } from './context/CartContext';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import CartPage from './pages/CartPage';
-import './App.css';
 import ProductsPage from './pages/ProductsPage';
+import RegisterPage from './pages/RegisterPage';
+import './App.css';
 
 
 // Protected Route Component
@@ -17,7 +18,8 @@ const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({children}) => {
     return <div>Loading...</div>;
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login"></Navigate>;
+  // Only redirect if not authenticated AND not loading
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
 function App() {
@@ -27,8 +29,9 @@ function App() {
         <CartProvider>
           <div className="App">
             <Routes>
-              <Route path="/" element={<LandingPage></LandingPage>}></Route>
-              <Route path="/login" element={<LoginPage></LoginPage>}></Route>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
               <Route path="/products" element={
                 <ProtectedRoute>
                   <ProductsPage/>
