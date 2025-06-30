@@ -263,6 +263,21 @@
   background-color: #5a67d8;
 }
 
+.checkout-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.order-error-message {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 /* Responsive design */
 @media (max-width: 968px) {
   .cart-content {

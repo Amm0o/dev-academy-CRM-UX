@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import CartPage from './pages/CartPage';
 import ProductsPage from './pages/ProductsPage';
 import RegisterPage from './pages/RegisterPage';
+import OrdersPage from './pages/OrdersPage';
 import './App.css';
 
 
@@ -41,6 +42,11 @@ function App() {
                   <ProtectedRoute>
                     <CartPage />
                   </ProtectedRoute>
+              } />
+              <Route path="/orders" element={
+                <ProtectedRoute>
+                  <OrdersPage />
+                </ProtectedRoute>
               } />
             </Routes>
           </div>

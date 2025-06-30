@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { orderService } from '../services';
 import './styles/CartPage.css';
 
 const CartPage: React.FC = () => {
   const { cart, loading, error, updateQuantity, removeFromCart, clearCart, totalAmount, itemCount } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
+  const [isProcessingOrder, setIsProcessingOrder] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
 
   const handleQuantityChange = async (productId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -47,6 +52,49 @@ const CartPage: React.FC = () => {
       } catch (error) {
         console.error('Failed to clear cart:', error);
       }
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (!user || !cart || cart.items.length === 0) {
+      setOrderError('Unable to process order. Please ensure you are logged in and have items in your cart.');
+      return;
+    }
+
+    setIsProcessingOrder(true);
+    setOrderError(null);
+
+    try {
+      // Create order from cart
+      const response = await orderService.createOrderFromCart(
+        user.email,
+        user.id,
+        cart.items.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity
+        })),
+        'Order placed from shopping cart'
+      );
+
+      if (response.data) {
+        // Clear the cart after successful order
+        await clearCart();
+        
+        // Navigate to orders page or order confirmation
+        navigate('/orders', { 
+          state: { 
+            message: 'Order placed successfully!',
+            orderGuid: response.data.orderGuid 
+          } 
+        });
+      } else {
+        setOrderError(response.error || 'Failed to create order. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error creating order:', err);
+      setOrderError('An unexpected error occurred while processing your order. Please try again.');
+    } finally {
+      setIsProcessingOrder(false);
     }
   };
 
@@ -181,8 +229,19 @@ const CartPage: React.FC = () => {
             <span>Total</span>
             <span>{formatPrice(totalAmount)}</span>
           </div>
-          <button className="checkout-button" onClick={() => navigate('/checkout')}>
-            Proceed to Checkout
+          
+          {orderError && (
+            <div className="order-error-message">
+              {orderError}
+            </div>
+          )}
+          
+          <button 
+            className="checkout-button" 
+            onClick={handleCheckout}
+            disabled={isProcessingOrder}
+          >
+            {isProcessingOrder ? 'Processing Order...' : 'Proceed to Checkout'}
           </button>
         </div>
       </div>
