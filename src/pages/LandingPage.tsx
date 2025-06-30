@@ -73,7 +73,9 @@ const LandingPage: React.FC = () => {
                     <nav className="nav-links" role="navigation" aria-label="Main navigation">
                         <Link to="/products" className="nav-link">Products</Link>
                         <Link to="/orders" className="nav-link">Orders</Link>
-                        {/* <Link to="/cart" className="nav-link">Cart</Link> */}
+                        {user?.role === 'Admin' && (
+                            <Link to="/admin" className="nav-link">Admin</Link>
+                        )}
                         <CartIcon />
                     </nav>
                 )}

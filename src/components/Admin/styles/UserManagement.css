@@ -1,0 +1,266 @@
+.user-management {
+  width: 100%;
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.management-header h2 {
+  color: #333;
+  margin: 0;
+}
+
+.users-count {
+  color: #666;
+  font-size: 1rem;
+}
+
+.error-message,
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.error-icon,
+.success-icon {
+  font-size: 1.2rem;
+}
+
+.close-button {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.close-button:hover {
+  opacity: 1;
+}
+
+.promote-user-section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.promote-user-section h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.section-description {
+  color: #666;
+  margin: 0.5rem 0 1rem 0;
+  font-size: 0.95rem;
+}
+
+.promote-form {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.promote-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.promote-form input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.promote-form button {
+  padding: 10px 20px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.promote-form button:hover:not(:disabled) {
+  background-color: #5a67d8;
+}
+
+.promote-form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.users-section {
+  margin-top: 2rem;
+}
+
+.users-section h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.users-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.users-table th,
+.users-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.users-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+  position: sticky;
+  top: 0;
+}
+
+.users-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.role-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.role-badge.admin {
+  background-color: #f0f4ff;
+  color: #667eea;
+}
+
+.role-badge.regular {
+  background-color: #e7f5ff;
+  color: #1c7ed6;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.promote-button,
+.demote-button,
+.delete-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.promote-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.promote-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.demote-button {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.demote-button:hover:not(:disabled) {
+  background-color: #e0a800;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.promote-button:disabled,
+.demote-button:disabled,
+.delete-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+.no-users {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .management-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .promote-form {
+    flex-direction: column;
+  }
+
+  .users-table {
+    font-size: 0.875rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}

@@ -18,3 +18,11 @@ export type { Cart, CartItemRequest } from './api/CartService/CartService';
 
 // Export base types
 export type { ApiResponse } from './api/ApiService';
+
+
+export { default as setupService } from './api/Setup/SetupService';
+
+export { default as userService } from './api/User/UserService';
+
+// Export types from UserService
+export type { User, UsersListResponse } from './api/User/UserService';
