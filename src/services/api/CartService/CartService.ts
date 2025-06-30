@@ -6,17 +6,24 @@ export interface CartItemRequest {
   quantity: number;
 }
 
+export interface CartItem {
+  cartItemId: number;
+  cartId: number;
+  productId: number;
+  productName?: string; // Optional until backend is fixed
+  quantity: number;
+  unitPrice: number;
+  itemTotal: number; // Changed from totalPrice to match API
+}
+
 export interface Cart {
   cartId: number;
   userId: number;
-  items: Array<{
-    productId: number;
-    productName: string;
-    quantity: number;
-    unitPrice: number;
-    totalPrice: number;
-  }>;
-  totalAmount: number;
+  createdAt: string;
+  updatedAt: string;
+  items: CartItem[];
+  totalCartValue: number; // Changed from totalAmount to match API
+  id: number;
 }
 
 class CartService extends ApiService {
@@ -37,7 +44,7 @@ class CartService extends ApiService {
   }
 
   async clearCart(userId: number): Promise<ApiResponse<any>> {
-    return this.delete(`/cart/${userId}/clear`);
+    return this.delete(`/cart/${userId}`);
   }
 }
 
