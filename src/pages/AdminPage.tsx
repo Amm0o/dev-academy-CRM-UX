@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import ProductManagement from '../components/Admin/ProductManagement'
+import ProductManagement from '../components/Admin/ProductManagement';
 import UserManagement from '../components/Admin/UserManagement';
 import './styles/AdminPage.css';
 
 const AdminPage: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, verifyRole } = useAuth();
   const [activeTab, setActiveTab] = useState<'products' | 'users'>('products');
+
+  useEffect(() => {
+    // Periodically verify role to catch any tampering
+    const interval = setInterval(() => {
+      verifyRole();
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [verifyRole]);
 
   // Show loading state while checking auth
   if (loading) {
@@ -18,7 +27,7 @@ const AdminPage: React.FC = () => {
     );
   }
 
-  // Redirect if not admin
+  // This check is redundant with AdminRoute, but kept as a safety measure
   if (!user || user.role !== 'Admin') {
     return <Navigate to="/" replace />;
   }

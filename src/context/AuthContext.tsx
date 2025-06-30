@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState, useEffect} from 'react';
+import React, {createContext, useContext, useState, useEffect, useCallback} from 'react';
 import { authService, LoginRequest, LoginResponse } from '../services';
 
 interface AuthContextType {
@@ -7,6 +7,7 @@ interface AuthContextType {
     login: (credentials: LoginRequest) => Promise<void>;
     logout: () => Promise<void>;
     loading: boolean;
+    verifyRole: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,26 +17,62 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     const [user, setUser] = useState<LoginResponse['user'] | null>(null)
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // check if user is already logged in
+    // Verify user role with backend
+    const verifyRole = useCallback(async () => {
         const token = localStorage.getItem('authToken');
         const userStr = localStorage.getItem('user');
-
-        if(token && userStr) {
-            try {
-                const userData = JSON.parse(userStr);
-                setUser(userData);
-                setIsAuthenticated(true);
-            } catch (error) {
-                console.log('Failed to parse user data');
-                // Clear invalid data
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('user');
-            }
+        
+        if (!token || !userStr) {
+            return;
         }
-        setLoading(false);
+
+        try {
+            const userData = JSON.parse(userStr);
+            
+            // If user claims to be admin, verify with backend
+            if (userData.role === 'Admin') {
+                const response = await authService.verifyAdminStatus(token);
+                
+                if (!response.data) {
+                    // User is not actually admin, correct the local storage
+                    userData.role = 'Regular';
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    setUser(userData);
+                    
+                    console.warn('User role mismatch detected and corrected');
+                }
+            }
+        } catch (error) {
+            console.error('Failed to verify user role:', error);
+        }
     }, []);
 
+    useEffect(() => {
+        const initAuth = async () => {
+            // check if user is already logged in
+            const token = localStorage.getItem('authToken');
+            const userStr = localStorage.getItem('user');
+
+            if(token && userStr) {
+                try {
+                    const userData = JSON.parse(userStr);
+                    setUser(userData);
+                    setIsAuthenticated(true);
+                    
+                    // Verify role after setting initial state
+                    await verifyRole();
+                } catch (error) {
+                    console.log('Failed to parse user data');
+                    // Clear invalid data
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('user');
+                }
+            }
+            setLoading(false);
+        };
+
+        initAuth();
+    }, [verifyRole]);
 
     const login = async (credentials: LoginRequest) => {
         try {
@@ -113,7 +150,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) 
 
 
     return ( 
-        <AuthContext.Provider value={{isAuthenticated, user, login, logout, loading}}>
+        <AuthContext.Provider value={{isAuthenticated, user, login, logout, loading, verifyRole}}>
             {children}
         </AuthContext.Provider>
     );

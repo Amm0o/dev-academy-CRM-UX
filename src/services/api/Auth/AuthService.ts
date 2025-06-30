@@ -57,6 +57,34 @@ class AuthService extends ApiService {
         const useStr = localStorage.getItem('user');
         return useStr ? JSON.parse(useStr) : null;
     }
+
+      /**
+   * Verify if the current user has admin privileges
+   * @param token - The JWT token
+   * @returns Boolean indicating admin status
+   */
+  async verifyAdminStatus(token: string): Promise<ApiResponse<boolean>> {
+    try {
+      // We can use the user endpoint to verify the role
+      const response = await this.get<any>('/user/list-all-users');
+      
+      // If we can access this admin-only endpoint, user is admin
+      return { 
+        data: response.status === 200,
+        status: response.status 
+      };
+    } catch (error: any) {
+      // 403 means not admin, 401 means not authenticated
+      if (error.response?.status === 403 || error.response?.status === 401) {
+        return { 
+          data: false,
+          status: error.response.status 
+        };
+      }
+      throw error;
+    }
+  }
+    
 }
 
 export default new AuthService();
