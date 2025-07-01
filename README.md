@@ -1,7 +1,5 @@
 # CRM Frontend - React Application
 
-# CRM Frontend - React Application
-
 > ## 🌐 **Live Demo**: [http://20.0.123.68:3001/](http://20.0.123.68:3001/)
 > 
 > **Try the application now!** Full-featured CRM with React + TypeScript
