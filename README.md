@@ -216,7 +216,7 @@ npm install
 ### Development Mode
 ```bash
 # Start development server
-npm start
+npm run start
 # or
 yarn start
 ```
