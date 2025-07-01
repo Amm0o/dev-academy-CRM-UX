@@ -206,7 +206,7 @@ yarn install
 ```bash
 crm-frontend/scripts/setup_env.sh
 ```
-
+> Reload session or create a new ssh session so you have env var populated and you can use node run the script in user mode.
 ### Install project depedencies
 ```bash
 cd crm-frontend/
