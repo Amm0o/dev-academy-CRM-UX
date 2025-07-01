@@ -182,7 +182,6 @@ crm-frontend/
 ### Recommended Tools
 - Visual Studio Code
 - React Developer Tools (browser extension)
-- Redux DevTools (for debugging context)
 
 ## 🚀 Installation
 
@@ -199,74 +198,6 @@ npm install
 
 # Using yarn
 yarn install
-```
-
-### 3. Set Up Environment Variables
-```bash
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env file
-nano .env
-```
-
-## ⚙️ Configuration
-
-### Environment Variables (.env)
-```env
-# API Configuration
-REACT_APP_API_URL=http://localhost:5205/api
-REACT_APP_API_TIMEOUT=30000
-
-# Feature Flags
-REACT_APP_ENABLE_ADMIN=true
-REACT_APP_ENABLE_ORDERS=true
-
-# External Services (if any)
-REACT_APP_STRIPE_PUBLIC_KEY=your_stripe_key
-REACT_APP_GOOGLE_ANALYTICS_ID=your_ga_id
-
-# Development
-REACT_APP_ENV=development
-REACT_APP_DEBUG=true
-```
-
-### API Configuration (src/services/api.ts)
-```typescript
-import axios from 'axios';
-
-const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  timeout: Number(process.env.REACT_APP_API_TIMEOUT) || 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Request interceptor for auth
-API.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Response interceptor for error handling
-API.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      // Handle token expiration
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
 ```
 
 ## 🏃 Running the Application
