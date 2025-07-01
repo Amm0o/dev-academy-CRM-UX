@@ -202,6 +202,17 @@ yarn install
 
 ## 🏃 Running the Application
 
+### Setup env (will install nvm, node and npm)
+```bash
+crm-frontend/scripts/setup_env.sh
+```
+
+### Install project depedencies
+```bash
+cd crm-frontend/
+npm install
+```
+
 ### Development Mode
 ```bash
 # Start development server

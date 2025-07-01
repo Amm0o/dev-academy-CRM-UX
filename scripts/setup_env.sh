@@ -10,3 +10,6 @@ nvm install v24.2.0
 
 # Now create the react project
 # npx create-react-app crm-frontend --template typescript
+sleep 2
+
+echo "restart your shell to have access to node, run: node --version to confirm"
